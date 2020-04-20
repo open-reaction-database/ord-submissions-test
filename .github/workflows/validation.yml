@@ -14,6 +14,7 @@ jobs:
         path: main
     - name: Fetch master and compute diff
       run: |
+        cd "${GITHUB_WORKSPACE}/main"
         git fetch --no-tags --prune --depth=1 origin master
         git diff --name-only ${{ github.base_ref }} | grep -e "\.pbtxt$" > changed_files.txt
         echo "Found $(wc -l changed_files.txt) changed pbtxt files"
@@ -48,4 +49,5 @@ jobs:
         set -ex
         cd "${GITHUB_WORKSPACE}"
         python "${GITHUB_WORKSPACE}/ord-schema/ord_schema/validate_reactions.py" \
-          --input_file=changed_files.txt --output=validation_output.txt
+          --input_file="${GITHUB_WORKSPACE}/main/changed_files.txt \
+          --output=validation_output.txt

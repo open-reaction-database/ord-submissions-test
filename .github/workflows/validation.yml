@@ -13,11 +13,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout ord-submissions-test
-    - uses: actions/checkout@v2.1.0
+      uses: actions/checkout@v2.1.0
       with:
         path: main
     - name: Checkout ord-schema
-    - uses: actions/checkout@v2.1.0
+      uses: actions/checkout@v2.1.0
       with:
         repository: Open-Reaction-Database/ord-schema
         path: ord-schema

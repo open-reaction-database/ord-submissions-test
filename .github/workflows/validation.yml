@@ -42,6 +42,6 @@ jobs:
       run: |
         set -ex
         cd "${GITHUB_WORKSPACE}/main"
-        git diff --name-only ${{ github.base_ref }} ${{ github.head_ref }} > changed_files.txt
+        git diff --name-only ${{ github.base_ref }} > changed_files.txt
         python "${GITHUB_WORKSPACE}/ord-schema/ord_schema/validate_reactions.py" \
           --input_file=changed_files.txt --output=validation_output.txt

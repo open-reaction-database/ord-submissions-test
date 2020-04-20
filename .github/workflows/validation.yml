@@ -1,4 +1,4 @@
-# This is a basic workflow to help you get started with Actions
+# Runs validate_reactions.py on all new and changed files in this PR.
 
 name: Validation
 
@@ -13,7 +13,7 @@ jobs:
       with:
         ref: ${{ github.head_ref }}
         path: main
-    - name: Fetch master and get changed files
+    - name: Fetch master and identify changed files
       run: |
         cd "${GITHUB_WORKSPACE}/main"
         echo "Current branch: $(git rev-parse --abbrev-ref HEAD)"

@@ -12,6 +12,11 @@ jobs:
       uses: actions/checkout@v2.1.0
       with:
         path: main
+    - name: Fetch master and compute diff
+      run: |
+        git fetch --no-tags --prune --depth=1 origin master
+        git diff --name-only ${{ github.base_ref }} | grep -e "\.pbtxt$" > changed_files.txt
+        echo "Found $(wc -l changed_files.txt) changed pbtxt files"
     - name: Checkout ord-schema
       uses: actions/checkout@v2.1.0
       with:
@@ -41,7 +46,6 @@ jobs:
       shell: bash -l {0}
       run: |
         set -ex
-        cd "${GITHUB_WORKSPACE}/main"
-        git diff --name-only ${{ github.base_ref }} > changed_files.txt
+        cd "${GITHUB_WORKSPACE}"
         python "${GITHUB_WORKSPACE}/ord-schema/ord_schema/validate_reactions.py" \
           --input_file=changed_files.txt --output=validation_output.txt

@@ -18,8 +18,7 @@ jobs:
         cd "${GITHUB_WORKSPACE}/main"
         echo "Current branch: $(git rev-parse --abbrev-ref HEAD)"
         git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
-        git diff --name-only origin/${{ github.base_ref }} | grep -e "\.pbtxt$" > changed_files.txt
-        # git diff --name-only origin/${{ github.base_ref }} > changed_files.txt
+        git diff --name-only origin/${{ github.base_ref }} | grep ".pbtxt" > changed_files.txt
         echo "Found $(wc -l changed_files.txt) changed pbtxt files"
     - name: Checkout ord-schema
       uses: actions/checkout@v2.1.0

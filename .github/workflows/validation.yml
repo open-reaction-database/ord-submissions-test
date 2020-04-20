@@ -15,8 +15,8 @@ jobs:
     - name: Fetch master and compute diff
       run: |
         cd "${GITHUB_WORKSPACE}/main"
-        git fetch --no-tags --prune --depth=1 origin master
-        git diff --name-only ${{ github.base_ref }} | grep -e "\.pbtxt$" > changed_files.txt
+        # git fetch --no-tags --prune --depth=1 origin master
+        git diff --name-only origin/master | grep -e "\.pbtxt$" > changed_files.txt
         echo "Found $(wc -l changed_files.txt) changed pbtxt files"
     - name: Checkout ord-schema
       uses: actions/checkout@v2.1.0

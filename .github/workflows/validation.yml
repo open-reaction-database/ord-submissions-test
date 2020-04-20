@@ -19,8 +19,9 @@ jobs:
         echo "Current branch: $(git rev-parse --abbrev-ref HEAD)"
         git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
         git diff --name-only origin/${{ github.base_ref }} > changed_files.txt
-        grep -c ".pbtxt" changed_files.txt
-        echo "Found $(wc -l changed_files.txt) changed pbtxt files"
+        # Use `|| [[ $? == 1 ]]` in case no lines match and the exit code is nonzero.
+        grep -e "\.pbtxt$" changed_files.txt > changed_pbtxt_files.txt || [[ $? == 1 ]]
+        echo "Found $(wc -l < changed_pbtxt_files.txt | tr -d ' ') changed pbtxt files"
     - name: Checkout ord-schema
       uses: actions/checkout@v2.1.0
       with:

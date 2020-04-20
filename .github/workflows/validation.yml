@@ -11,12 +11,14 @@ jobs:
     - name: Checkout ord-submissions-test
       uses: actions/checkout@v2.1.0
       with:
+        ref: ${{ github.head_ref }}
         path: main
     - name: Fetch master and compute diff
       run: |
+        set -ex
         cd "${GITHUB_WORKSPACE}/main"
-        # git fetch --no-tags --prune --depth=1 origin master
-        git diff --name-only origin/master | grep -e "\.pbtxt$" > changed_files.txt
+        git fetch --no-tags --prune --depth=1 origin ${{ github.base_ref }}
+        git diff --name-only origin/${{ github.base_ref }} | grep -e "\.pbtxt$" > changed_files.txt
         echo "Found $(wc -l changed_files.txt) changed pbtxt files"
     - name: Checkout ord-schema
       uses: actions/checkout@v2.1.0

@@ -1,0 +1,48 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Validation
+
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2.1.0
+      with:
+        path: main
+    - uses: actions/checkout@v2.1.0
+      with:
+        repository: Open-Reaction-Database/ord-schema
+        key: ord-schema
+    - name: Set up protoc
+      uses: arduino/setup-protoc@v1.1.0
+    - name: Install miniconda
+      uses: goanpeca/setup-miniconda@v1.0.2
+      with:
+        python-version: '3.7'
+        auto-update-conda: true
+    - name: Install dependencies
+      shell: bash -l {0}
+      run: |
+        cd "${GITHUB_WORKSPACE}/ord-schema"
+        conda install --file requirements.txt
+        conda install -c rdkit rdkit
+    - name: Install ord_schema
+      shell: bash -l {0}
+      run: |
+        cd "${GITHUB_WORKSPACE}/ord-schema"
+        pip install -r requirements.txt
+        python setup.py build_py
+        python setup.py install
+    - name: Validate submission
+      shell: bash -l {0}
+      run: |
+        set -ex
+        cd "${GITHUB_WORKSPACE}/main"
+        git diff --name-only ${{ github.base_ref }} ${{ github.head_ref }} > changed_files.txt
+        python "${GITHUB_WORKSPACE}/ord-schema/ord_schema/validate_reactions.py" \
+          --input_file=changed_files.txt --output=validation_output.txt

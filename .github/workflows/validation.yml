@@ -10,14 +10,15 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - name: Checkout ord-submissions-test
     - uses: actions/checkout@v2.1.0
       with:
         path: main
+    - name: Checkout ord-schema
     - uses: actions/checkout@v2.1.0
       with:
         repository: Open-Reaction-Database/ord-schema
-        key: ord-schema
+        path: ord-schema
     - name: Set up protoc
       uses: arduino/setup-protoc@v1.1.0
     - name: Install miniconda

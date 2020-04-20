@@ -13,7 +13,7 @@ jobs:
       with:
         ref: ${{ github.head_ref }}
         path: main
-    - name: Fetch master and compute diff
+    - name: Fetch master and get changed files
       run: |
         cd "${GITHUB_WORKSPACE}/main"
         echo "Current branch: $(git rev-parse --abbrev-ref HEAD)"
@@ -53,5 +53,5 @@ jobs:
         set -ex
         cd "${GITHUB_WORKSPACE}"
         python "${GITHUB_WORKSPACE}/ord-schema/ord_schema/validate_reactions.py" \
-          --input_file="${GITHUB_WORKSPACE}/main/changed_files.txt \
+          --input_file="${GITHUB_WORKSPACE}/main/changed_pbtxt_files.txt \
           --output=validation_output.txt

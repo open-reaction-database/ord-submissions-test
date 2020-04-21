@@ -1,0 +1,56 @@
+# Runs validate_reactions.py on all new and changed files in this PR.
+
+name: Validation
+
+on: pull_request
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout ord-submissions-test
+      uses: actions/checkout@v2.1.0
+      with:
+        ref: ${{ github.head_ref }}
+        path: main
+    - name: Fetch master and identify changed files
+      run: |
+        cd "${GITHUB_WORKSPACE}/main"
+        echo "Current branch: $(git rev-parse --abbrev-ref HEAD)"
+        git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
+        git diff --name-only origin/${{ github.base_ref }} > changed_files.txt
+        # Use `|| [[ $? == 1 ]]` in case no lines match and the exit code is nonzero.
+        grep -e "\.pbtxt$" changed_files.txt > changed_pbtxt_files.txt || [[ $? == 1 ]]
+        echo "Found $(wc -l < changed_pbtxt_files.txt | tr -d ' ') changed pbtxt files"
+    - name: Checkout ord-schema
+      uses: actions/checkout@v2.1.0
+      with:
+        repository: Open-Reaction-Database/ord-schema
+        path: ord-schema
+    - name: Set up protoc
+      uses: arduino/setup-protoc@v1.1.0
+    - name: Install miniconda
+      uses: goanpeca/setup-miniconda@v1.0.2
+      with:
+        python-version: '3.7'
+        auto-update-conda: true
+    - name: Install dependencies
+      shell: bash -l {0}
+      run: |
+        cd "${GITHUB_WORKSPACE}/ord-schema"
+        conda install --file requirements.txt
+        conda install -c rdkit rdkit
+    - name: Install ord_schema
+      shell: bash -l {0}
+      run: |
+        cd "${GITHUB_WORKSPACE}/ord-schema"
+        pip install -r requirements.txt
+        python setup.py build_py
+        python setup.py install
+    - name: Validate submission
+      shell: bash -l {0}
+      run: |
+        set -ex
+        python "${GITHUB_WORKSPACE}/ord-schema/ord_schema/validate_reactions.py" \
+          --input_file="${GITHUB_WORKSPACE}/main/changed_pbtxt_files.txt" \
+          --output="${GITHUB_WORKSPACE}/validation_output.txt"

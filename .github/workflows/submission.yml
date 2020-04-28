@@ -59,7 +59,8 @@ jobs:
         python "${GITHUB_WORKSPACE}/ord-schema/ord_schema/process_dataset.py" \
           --input_file=changed_pbtxt_files.txt \
           --input_format=pbtxt \
-          --update
+          --update \
+          --cleanup
       if: env.NUM_CHANGED_FILES != '0'
     - name: Commit updates
       run: |

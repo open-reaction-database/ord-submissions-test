@@ -21,8 +21,9 @@ jobs:
         git diff --name-only upstream/master > changed_files.txt
         # Use `|| [[ $? == 1 ]]` in case no lines match and the exit code is nonzero.
         grep -e "\.pbtxt$" changed_files.txt > changed_pbtxt_files.txt || [[ $? == 1 ]]
-        echo "::set-env name=NUM_CHANGED_FILES::$(wc -l < changed_pbtxt_files.txt | tr -d ' ')"
-        echo "Found ${{ env.NUM_CHANGED_FILES }} changed pbtxt files"
+        LOCAL_NUM_CHANGED="$(wc -l < changed_pbtxt_files.txt | tr -d ' ')"
+        echo "::set-env name=NUM_CHANGED_FILES::${LOCAL_NUM_CHANGED}"
+        echo "Found ${LOCAL_NUM_CHANGED} changed pbtxt files"
     - name: Checkout ord-schema
       uses: actions/checkout@v2
       with:

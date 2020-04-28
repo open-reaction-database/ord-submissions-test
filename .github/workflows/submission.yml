@@ -16,8 +16,8 @@ jobs:
       run: |
         cd "${GITHUB_WORKSPACE}/ord-submissions"
         echo "Current branch: $(git rev-parse --abbrev-ref HEAD)"
-        git fetch --no-tags --prune --depth=1 origin +refs/heads/*:refs/remotes/origin/*
-        git diff --name-only origin/${{ github.base_ref }} > changed_files.txt
+        git fetch --no-tags --prune --depth=1 upstream +refs/heads/*:refs/remotes/upstream/*
+        git diff --name-only upstream/master > changed_files.txt
         # Use `|| [[ $? == 1 ]]` in case no lines match and the exit code is nonzero.
         grep -e "\.pbtxt$" changed_files.txt > changed_pbtxt_files.txt || [[ $? == 1 ]]
         echo "Found $(wc -l < changed_pbtxt_files.txt | tr -d ' ') changed pbtxt files"

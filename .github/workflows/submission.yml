@@ -30,27 +30,27 @@ jobs:
         repository: skearnes/ord-schema
         ref: process
         path: ord-schema
-      if: env.NUM_CHANGED_FILES != "0"
+      if: env.NUM_CHANGED_FILES != '0'
     - name: Install miniconda
       uses: goanpeca/setup-miniconda@v1.0.2
       with:
         python-version: '3.7'
         auto-update-conda: true
-      if: env.NUM_CHANGED_FILES != "0"
+      if: env.NUM_CHANGED_FILES != '0'
     - name: Install dependencies
       shell: bash -l {0}
       run: |
         cd "${GITHUB_WORKSPACE}/ord-schema"
         conda install --file requirements.txt
         conda install -c rdkit rdkit
-      if: env.NUM_CHANGED_FILES != "0"
+      if: env.NUM_CHANGED_FILES != '0'
     - name: Install ord_schema
       shell: bash -l {0}
       run: |
         cd "${GITHUB_WORKSPACE}/ord-schema"
         pip install -r requirements.txt
         python setup.py install
-      if: env.NUM_CHANGED_FILES != "0"
+      if: env.NUM_CHANGED_FILES != '0'
     - name: Validate submission
       shell: bash -l {0}
       run: |
@@ -58,4 +58,4 @@ jobs:
         python "${GITHUB_WORKSPACE}/ord-schema/ord_schema/process_dataset.py" \
           --input_file="${GITHUB_WORKSPACE}/ord-submissions/changed_pbtxt_files.txt" \
           --update
-      if: env.NUM_CHANGED_FILES != "0"
+      if: env.NUM_CHANGED_FILES != '0'

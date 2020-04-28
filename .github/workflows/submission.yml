@@ -21,8 +21,10 @@ jobs:
         git diff --name-only upstream/master > changed_files.txt
         # Use `|| [[ $? == 1 ]]` in case no lines match and the exit code is nonzero.
         grep -e "\.pbtxt$" changed_files.txt > changed_pbtxt_files.txt || [[ $? == 1 ]]
-        echo "Found $(wc -l < changed_pbtxt_files.txt | tr -d ' ') changed pbtxt files"
+        echo "::set-env name=NUM_CHANGED_FILES::$(wc -l < changed_pbtxt_files.txt | tr -d ' ')"
+        echo "Found ${NUM_CHANGED_FILES} changed pbtxt files"
     - name: Checkout ord-schema
+      if: env.NUM_CHANGED_FILES != "0"
       uses: actions/checkout@v2
       with:
         # TODO(kearnes): Use upstream master.
@@ -30,23 +32,27 @@ jobs:
         ref: process
         path: ord-schema
     - name: Install miniconda
+      if: env.NUM_CHANGED_FILES != "0"
       uses: goanpeca/setup-miniconda@v1.0.2
       with:
         python-version: '3.7'
         auto-update-conda: true
     - name: Install dependencies
+      if: env.NUM_CHANGED_FILES != "0"
       shell: bash -l {0}
       run: |
         cd "${GITHUB_WORKSPACE}/ord-schema"
         conda install --file requirements.txt
         conda install -c rdkit rdkit
     - name: Install ord_schema
+      if: env.NUM_CHANGED_FILES != "0"
       shell: bash -l {0}
       run: |
         cd "${GITHUB_WORKSPACE}/ord-schema"
         pip install -r requirements.txt
         python setup.py install
     - name: Validate submission
+      if: env.NUM_CHANGED_FILES != "0"
       shell: bash -l {0}
       run: |
         set -ex

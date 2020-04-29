@@ -31,7 +31,7 @@ jobs:
       with:
         repository: Open-Reaction-Database/ord-schema
         path: ord-schema
-      if: env.NUM_CHANGED_FILES > 0
+      if: env.NUM_CHANGED_FILES != '0'
     - name: Install miniconda
       uses: goanpeca/setup-miniconda@v1.0.2
       with:

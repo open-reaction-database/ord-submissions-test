@@ -25,6 +25,7 @@ jobs:
         LOCAL_NUM_CHANGED="$(wc -l < changed_pbtxt_files.txt | tr -d ' ')"
         echo "::set-env name=NUM_CHANGED_FILES::${LOCAL_NUM_CHANGED}"
         echo "Found ${LOCAL_NUM_CHANGED} changed pbtxt files"
+        cat changed_pbtxt_files.txt
     - name: Checkout ord-schema
       uses: actions/checkout@v2
       with:

@@ -58,9 +58,9 @@ jobs:
       if: env.NUM_CHANGED_FILES != '0' && env.GITHUB_EVENT_NAME == 'push'
     - name: Validate submission
       shell: bash -l {0}
-        run: |
-          cd "${GITHUB_WORKSPACE}"
-          python ./ord-schema/ord_schema/process_dataset.py \
-            --input_file=changed_pbtxt_files.txt \
-            --input_format=pbtxt
-        if: env.NUM_CHANGED_FILES != '0' && env.GITHUB_EVENT_NAME == 'pull_request'
+      run: |
+        cd "${GITHUB_WORKSPACE}"
+        python ./ord-schema/ord_schema/process_dataset.py \
+          --input_file=changed_pbtxt_files.txt \
+          --input_format=pbtxt
+      if: env.NUM_CHANGED_FILES != '0' && env.GITHUB_EVENT_NAME == 'pull_request'

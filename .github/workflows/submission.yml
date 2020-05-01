@@ -1,37 +1,36 @@
-# Runs validate_reactions.py on all new and changed files in this PR.
+# Runs process_dataset.py on all new and changed files.
+#
+# If this workflow is triggered by a `pull_request` event (usually on the
+# master branch of the upstream repo), process_datasets.py only performs
+# validation. This provides status updates for submission PRs at the base repo
+# level.
+#
+# If this workflow is triggered by a `push` event (usually in a forked repo),
+# process_datasets.py is run with --update and --clean, which writes updated
+# submission protos and replaces the original submission files in git. Based on
+# research by kearnes@, there is no way to commit to a forked repo in an action
+# triggered by a `pull_request` event in the upstream repo.
 
 name: Submission
 
-on: push
+on: [pull_request, push]
 
 jobs:
-  validate:
+  process_submission:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout ord-submissions-test
+    - name: Checkout ord-submissions
       uses: actions/checkout@v2
-      with:
-        path: ord-submissions
-    - name: Fetch master and identify changed files
-      run: |
-        cd "${GITHUB_WORKSPACE}/ord-submissions"
-        git remote add upstream https://github.com/Open-Reaction-Database/ord-submissions-test.git
-        echo "Current branch: $(git rev-parse --abbrev-ref HEAD)"
-        git fetch --no-tags --prune --depth=1 upstream +refs/heads/*:refs/remotes/upstream/*
-        git diff --name-only upstream/master > changed_files.txt
-        # Use `|| [[ $? == 1 ]]` in case no lines match and the exit code is nonzero.
-        grep -e "\.pbtxt$" changed_files.txt > changed_pbtxt_files.txt || [[ $? == 1 ]]
-        # Use LOCAL_NUM_CHANGED since ::set-env values are not available in the same step.
-        LOCAL_NUM_CHANGED="$(wc -l < changed_pbtxt_files.txt | tr -d ' ')"
-        echo "::set-env name=NUM_CHANGED_FILES::${LOCAL_NUM_CHANGED}"
-        echo "Found ${LOCAL_NUM_CHANGED} changed pbtxt files"
-        cat changed_pbtxt_files.txt
     - name: Checkout ord-schema
       uses: actions/checkout@v2
       with:
         repository: Open-Reaction-Database/ord-schema
         path: ord-schema
-      if: env.NUM_CHANGED_FILES != '0'
+    - name: Identify changed files
+      # NOTE(kearnes): This sets the NUM_CHANGED_FILES variable.
+      run: |
+        cd "${GITHUB_WORKSPACE}"
+        ./ord-schema/actions/changed_files.sh
     - name: Install miniconda
       uses: goanpeca/setup-miniconda@v1.0.2
       with:
@@ -44,30 +43,24 @@ jobs:
         cd "${GITHUB_WORKSPACE}/ord-schema"
         conda install --file requirements.txt
         conda install -c rdkit rdkit
-      if: env.NUM_CHANGED_FILES != '0'
-    - name: Install ord_schema
-      shell: bash -l {0}
-      run: |
-        cd "${GITHUB_WORKSPACE}/ord-schema"
-        pip install -r requirements.txt
         python setup.py install
       if: env.NUM_CHANGED_FILES != '0'
     - name: Validate submission
       shell: bash -l {0}
       run: |
-        cd "${GITHUB_WORKSPACE}/ord-submissions"
-        python "${GITHUB_WORKSPACE}/ord-schema/ord_schema/process_dataset.py" \
+        cd "${GITHUB_WORKSPACE}"
+        python ./ord-schema/ord_schema/process_dataset.py \
+          --input_file=changed_pbtxt_files.txt \
+          --input_format=pbtxt
+      if: github.event_name == 'pull_request' && env.NUM_CHANGED_FILES != '0'
+    - name: Update submission
+      shell: bash -l {0}
+      run: |
+        cd "${GITHUB_WORKSPACE}"
+        python ./ord-schema/ord_schema/process_dataset.py \
           --input_file=changed_pbtxt_files.txt \
           --input_format=pbtxt \
           --update \
           --cleanup
-      if: env.NUM_CHANGED_FILES != '0'
-    - name: Commit updates
-      run: |
-        cd "${GITHUB_WORKSPACE}/ord-submissions"
-        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-        git config --local user.name "github-actions[bot]"
-        # Gracefully fail if there is nothing to commit.
-        git commit -a -m "Automatic update by process_datasets.py" || [[ $? == 1 ]]
-        git push
-      if: env.NUM_CHANGED_FILES != '0'
+        ./ord-schema/actions/commit_changes.sh "Validate/update submission"
+      if: github.event_name == 'push' && env.NUM_CHANGED_FILES != '0'

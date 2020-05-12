@@ -1,1 +1,3 @@
-This is a temporary LFS file to satisfy https://github.com/git-lfs/git-lfs/issues/1449#issuecomment-239831273
+version https://git-lfs.github.com/spec/v1
+oid sha256:0c3680d7b338477a22b0bcd9a36ca3fd534055ac2397152e5d4b121f98a088b0
+size 110

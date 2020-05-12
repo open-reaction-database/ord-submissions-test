@@ -39,7 +39,13 @@ reactions {
       }
       details: "Automatic updates from the submission pipeline."
     }
-    record_id: "ord-f1b59e4c9cdc4b069500f74afb6b0305"
+    record_modified {
+      time {
+        value: "Tue May 12 18:33:04 2020"
+      }
+      details: "Automatic updates from the submission pipeline."
+    }
+    record_id: "ord-45b5827498d74e75a675c5edbd340a5a"
   }
 }
 dataset_id: "0097bcead459457c9889be6b6c6c881d"

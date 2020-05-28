@@ -6,6 +6,9 @@ on:
   push:
     branches:
       - master
+  schedule:
+    # Runs every eight hours.
+    - cron: '0 */8 * * *'
 
 jobs:
   validate_database:

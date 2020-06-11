@@ -8,11 +8,11 @@ Thanks for helping out! What would you like to do?
 
 ## Report an issue
 
-Sorry to hear that you're having trouble! Please [file a bug report](https://github.com/Open-Reaction-Database/ord-schema/issues/new?assignees=&labels=bug&template=bug_report.md&title=) to tell us about the problem.
+Sorry to hear that you're having trouble! Please [file a bug report](https://github.com/Open-Reaction-Database/ord-submissions-test/issues/new?assignees=&labels=bug&template=bug_report.md&title=) to tell us about the problem.
 
 ## Suggest an improvement
 
-Great idea! Please [create a feature request](https://github.com/Open-Reaction-Database/ord-schema/issues/new?assignees=&labels=enhancement&template=feature_request.md&title=) to let us know what you'd like to see.
+Great idea! Please [create a feature request](https://github.com/Open-Reaction-Database/ord-submissions-test/issues/new?assignees=&labels=enhancement&template=feature_request.md&title=) to let us know what you'd like to see.
 
 ## Submit a new dataset
 

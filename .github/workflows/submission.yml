@@ -52,7 +52,8 @@ jobs:
         pip install pygithub
         python ./ord-schema/actions/change_stats.py \
           --base=upstream/main \
-          --issue=${{ github.event.number }}
+          --issue=${{ github.event.number }} \
+          --token=${{ secrets.GITHUB_TOKEN }}
       if: github.event_name == 'pull_request' && env.NUM_CHANGED_FILES != '0'
     - name: Update submission
       run: |

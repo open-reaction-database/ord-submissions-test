@@ -14,7 +14,7 @@ jobs:
   validate_database:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout ord-submissions
+    - name: Checkout ord-data
       uses: actions/checkout@v2
     - name: Checkout ord-schema
       uses: actions/checkout@v2

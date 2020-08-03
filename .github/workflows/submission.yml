@@ -19,12 +19,13 @@ jobs:
   process_submission:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout ord-submissions
+    - name: Checkout ord-data
       uses: actions/checkout@v2
     - name: Checkout ord-schema
       uses: actions/checkout@v2
       with:
         repository: skearnes/ord-schema  # DO NOT SUBMIT
+        ref: stats  # DO NOT SUBMIT
         path: ord-schema
     - name: Identify changed files
       # NOTE(kearnes): This sets the NUM_CHANGED_FILES variable.

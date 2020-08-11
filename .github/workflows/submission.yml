@@ -65,7 +65,7 @@ jobs:
         python ./ord-schema/ord_schema/process_dataset.py \
           --input_file=changed_pbtxt_files.txt \
           --base=upstream/main
-      if: github.event_name == 'pull_request' && env.NUM_CHANGED_FILES != '0'
+      if: github.event_name == 'push' && env.NUM_CHANGED_FILES != '0'
     - name: Update submission
       run: |
         cd "${GITHUB_WORKSPACE}"
@@ -75,4 +75,4 @@ jobs:
           --cleanup \
           --base=upstream/main
         ./ord-schema/actions/commit_changes.sh "Validate/update submission"
-      if: github.event_name == 'push' && env.NUM_CHANGED_FILES != '0'
+      if: github.event_name == 'pull_request' && env.NUM_CHANGED_FILES != '0'

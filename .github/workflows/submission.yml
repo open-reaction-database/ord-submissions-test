@@ -21,13 +21,6 @@ jobs:
     steps:
     - name: Checkout ord-data
       uses: actions/checkout@v2
-      if: github.event_name == 'push'
-    - name: Checkout ord-data
-      uses: actions/checkout@v2
-      with:
-        repository: "${GITHUB_ACTOR}/${GITHUB_REPOSITORY##*/}"
-        ref: ${{ github.event.pull_request.head.sha }}
-      if: github.event_name == 'pull_request'
     - name: Add upstream for comparisons to HEAD
       run: |
         cd "${GITHUB_WORKSPACE}"
@@ -72,7 +65,7 @@ jobs:
         python ./ord-schema/ord_schema/process_dataset.py \
           --input_file=changed_pbtxt_files.txt \
           --base=upstream/main
-      if: github.event_name == 'push' && env.NUM_CHANGED_FILES != '0'
+      if: github.event_name == 'pull' && env.NUM_CHANGED_FILES != '0'
     - name: Update submission
       run: |
         cd "${GITHUB_WORKSPACE}"
@@ -85,5 +78,5 @@ jobs:
         git config user.email github-actions@github.com
         # Fail gracefully if there is nothing to commit.
         git commit -a -m "Update submission" || (( $? == 1 ))
-        git push origin "HEAD:${GITHUB_HEAD_REF}"
-      if: github.event_name == 'pull_request' && env.NUM_CHANGED_FILES != '0'
+        git push origin "HEAD:${GITHUB_REF}"
+      if: github.event_name == 'push' && env.NUM_CHANGED_FILES != '0'

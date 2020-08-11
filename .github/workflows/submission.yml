@@ -68,16 +68,15 @@ jobs:
       if: github.event_name == 'push' && env.NUM_CHANGED_FILES != '0'
     - name: Update submission
       run: |
-        set -ex
         cd "${GITHUB_WORKSPACE}"
         python ./ord-schema/ord_schema/process_dataset.py \
           --input_file=changed_pbtxt_files.txt \
           --update \
           --cleanup \
           --base=upstream/main
-        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-        git config --local user.name "github-actions[bot]"
+        git config user.name github-actions
+        git config user.email github-actions@github.com
         # Fail gracefully if there is nothing to commit.
         git commit -a -m "Update submission" || (( $? == 1 ))
-        git push "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_ACTOR}/${GITHUB_REPOSITORY##*/}.git" "HEAD:${GITHUB_BASE_REF}"
+        git push
       if: github.event_name == 'pull_request' && env.NUM_CHANGED_FILES != '0'

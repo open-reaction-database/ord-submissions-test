@@ -64,7 +64,7 @@ jobs:
         cd "${GITHUB_WORKSPACE}"
         pip install pygithub
         python ./ord-schema/ord_schema/process_dataset.py \
-          --input_file=changed_pbtxt_files.txt
+          --input_file=changed_pbtxt_files.txt \
           --base=upstream/main \
           --issue=${{ github.event.number }} \
           --token=${{ secrets.GITHUB_TOKEN }}

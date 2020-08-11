@@ -74,5 +74,9 @@ jobs:
           --update \
           --cleanup \
           --base=upstream/main
-        ./ord-schema/actions/commit_changes.sh "Validate/update submission"
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        # Fail gracefully if there is nothing to commit.
+        git commit -a -m "Update submission" || (( $? == 1 ))
+        git push "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_ACTOR}/${GITHUB_REPOSITORY##*/}.git" "HEAD:${GITHUB_BASE_REF}"
       if: github.event_name == 'pull_request' && env.NUM_CHANGED_FILES != '0'

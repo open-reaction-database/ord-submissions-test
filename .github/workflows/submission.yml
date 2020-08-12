@@ -26,7 +26,7 @@ jobs:
     - name: Checkout ord-schema
       uses: actions/checkout@v2
       with:
-        repository: skeares/ord-schema
+        repository: skearnes/ord-schema
         ref: submission
         path: ord-schema
     - name: Identify changed files

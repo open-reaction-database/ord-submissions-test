@@ -15,8 +15,8 @@ jobs:
     steps:
     - name: Checkout ord-data
       uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+      with:
+        fetch-depth: 0
     - name: Add upstream for comparisons to HEAD
       run: |
         cd "${GITHUB_WORKSPACE}"

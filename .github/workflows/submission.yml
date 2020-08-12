@@ -79,5 +79,6 @@ jobs:
         git push
       if: >-
         env.NUM_CHANGED_FILES != '0' &&
-        github.repository_owner == 'Open-Reaction-Database' &&
-        github.event_name == 'pull_request'
+        github.event_name == 'pull_request' &&
+        ! github.event.pull_request.head.repo.fork
+

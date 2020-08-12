@@ -32,8 +32,7 @@ jobs:
     - name: Checkout ord-schema
       uses: actions/checkout@v2
       with:
-        repository: skearnes/ord-schema
-        ref: submission
+        repository: Open-Reaction-Database/ord-schema
         path: ord-schema
     - name: Identify changed files
       # NOTE(kearnes): This sets the NUM_CHANGED_FILES variable.

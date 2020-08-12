@@ -77,6 +77,7 @@ jobs:
         # Fail gracefully if there is nothing to commit.
         git commit -a -m "Update submission" || (( $? == 1 ))
         git push
-      if: env.NUM_CHANGED_FILES != '0' && \
-          github.repository_owner == 'Open-Reaction-Database' && \
-          github.event_name == 'pull_request'
+      if: >-
+        env.NUM_CHANGED_FILES != '0' &&
+        github.repository_owner == 'Open-Reaction-Database' &&
+        github.event_name == 'pull_request'

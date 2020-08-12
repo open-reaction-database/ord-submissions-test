@@ -76,7 +76,7 @@ jobs:
         git config user.email github-actions@github.com
         # Fail gracefully if there is nothing to commit.
         git commit -a -m "Update submission" || (( $? == 1 ))
-        git push
+        git push origin "HEAD:${GITHUB_HEAD_REF}"
       if: >-
         env.NUM_CHANGED_FILES != '0' &&
         github.event_name == 'pull_request' &&

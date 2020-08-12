@@ -15,6 +15,12 @@ jobs:
     steps:
     - name: Checkout ord-data
       uses: actions/checkout@v2
+      if: github.event_name == 'push'
+    - name: Checkout ord-data
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+      if: github.event_name == 'pull_request'
     - name: Add upstream for comparisons to HEAD
       run: |
         cd "${GITHUB_WORKSPACE}"
@@ -76,7 +82,7 @@ jobs:
         git config user.email github-actions@github.com
         # Fail gracefully if there is nothing to commit.
         git commit -a -m "Update submission" || (( $? == 1 ))
-        git push "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:${GITHUB_HEAD_REF}"
+        git push
       if: >-
         env.NUM_CHANGED_FILES != '0' &&
         github.event_name == 'pull_request' &&
